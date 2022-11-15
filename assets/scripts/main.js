@@ -42,6 +42,18 @@ function initializeServiceWorker() {
   // websites to have some (if not all) functionality offline! I highly
   // recommend reading up on ServiceWorkers on MDN before continuing.
   /*******************/
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    })
+  }
   // We first must register our ServiceWorker here before any of the code in
   // sw.js is executed.
   // B1. TODO - Check if 'serviceWorker' is supported in the current browser
