@@ -7,7 +7,7 @@ const CACHE_NAME = 'lab-7-starter';
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
-      // B6. TODO - Add all of the URLs from RECIPE_URLs here so that they are
+      // B6.  - Add all of the URLs from RECIPE_URLs here so that they are
       //            added to the cache when the ServiceWorker is installed
       return cache.addAll([]);
     })
@@ -32,9 +32,20 @@ self.addEventListener('fetch', function (event) {
   //       fetch(event.request)
   // https://developer.chrome.com/docs/workbox/caching-strategies-overview/
   /*******************************/
-  // B7. TODO - Respond to the event by opening the cache using the name we gave
+  // B7.  - Respond to the event by opening the cache using the name we gave
   //            above (CACHE_NAME)
-  // B8. TODO - If the request is in the cache, return with the cached version.
+  // B8.  - If the request is in the cache, return with the cached version.
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
+  event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+    return cache.match(event.request).then((response) => {
+      if (response) return response
+
+      return fetch(event.request).then((response) => {
+        cache.put(event.request, response.clone())
+        return response
+      })
+    })
+  }))
+
 });
